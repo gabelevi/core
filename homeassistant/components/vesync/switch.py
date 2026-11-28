@@ -11,7 +11,7 @@ from pyvesync.base_devices import (
     VeSyncHumidifier,
     VeSyncPurifier,
 )
-from pyvesync.const import DeviceStatus
+from pyvesync.const import DeviceStatus, HumidifierFeatures
 from pyvesync.device_container import DeviceContainer
 
 from homeassistant.components.switch import (
@@ -160,7 +160,10 @@ SENSOR_DESCRIPTIONS: Final[tuple[VeSyncSwitchEntityDescription, ...]] = (
         key="drying_mode_power_off",
         is_on=lambda device: device.state.drying_mode_auto_switch == DeviceStatus.ON,
         exists_fn=(
-            lambda device: is_humidifier(device) and "drying_mode" in device.features
+            lambda device: (
+                is_humidifier(device)
+                and HumidifierFeatures.DRYING_MODE in device.features
+            )
         ),
         translation_key="drying_mode_power_off",
         on_fn=lambda device: _toggle_drying_mode_on_power_off(device, True),
